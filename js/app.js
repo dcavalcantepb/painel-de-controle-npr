@@ -51,6 +51,40 @@
   function save(){
     try { localStorage.setItem(KEY, JSON.stringify(state)); }
     catch (e) { toast('Não foi possível salvar neste navegador.'); }
+    renderBackupStatus();
+  }
+
+  // ---------- Política de backup ----------
+  // Guardamos quando foi o último backup e uma "assinatura" do conteúdo naquele
+  // momento (só as seções e textos; trocar de aba não conta como alteração).
+  // Se o conteúdo atual for diferente da assinatura, há alterações sem backup.
+  const META_KEY = 'textos-padrao:backup';
+  const assinatura = () => JSON.stringify(state.tabs);
+  function lerBackupMeta(){
+    try { return JSON.parse(localStorage.getItem(META_KEY)) || null; } catch (e) { return null; }
+  }
+  function marcarBackupFeito(){
+    try { localStorage.setItem(META_KEY, JSON.stringify({ em: new Date().toISOString(), assinatura: assinatura() })); } catch (e) {}
+    renderBackupStatus();
+  }
+  function renderBackupStatus(){
+    const meta = lerBackupMeta();
+    const el = $('backupStatus'), btn = $('exportBtn');
+    if (!el || !btn) return;
+    let pendente, msg;
+    if (!meta) {
+      pendente = true;
+      msg = '⚠ Nenhum backup registrado ainda. Exporte um e guarde no OneDrive.';
+    } else {
+      const quando = new Date(meta.em).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+      pendente = meta.assinatura !== assinatura();
+      msg = pendente
+        ? '⚠ Há alterações desde o último backup (' + quando + '). Exporte um novo e guarde no OneDrive.'
+        : 'Backup em dia — último em ' + quando + '.';
+    }
+    el.textContent = msg;
+    el.classList.toggle('pendente', pendente);
+    btn.classList.toggle('primary', pendente);
   }
 
   const activeTab = () => state.tabs.find(t => t.id === state.active) || null;
@@ -289,7 +323,8 @@
     a.download = 'textos-padrao-backup-' + stamp + '.json';
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    toast('Backup exportado');
+    marcarBackupFeito();
+    toast('Backup exportado. Guarde o arquivo no OneDrive.');
   });
   $('importBtn').addEventListener('click', () => $('importFile').click());
   $('importFile').addEventListener('change', async (e) => {
@@ -299,7 +334,7 @@
       const d = JSON.parse(await file.text());
       if (!valid(d)) throw new Error('formato');
       if (!confirm('Substituir todos os textos atuais pelos do backup?')) return;
-      state = normalize(d); save(); query = ''; $('search').value = ''; render();
+      state = normalize(d); save(); marcarBackupFeito(); query = ''; $('search').value = ''; render();
       toast('Backup importado');
     } catch (err) {
       toast('Arquivo inválido. Use um backup exportado por esta página.');
@@ -322,5 +357,10 @@
     aplicarTema(atual === 'escuro' ? 'claro' : 'escuro');
   });
 
+  // pede ao navegador para tratar os dados deste site como persistentes
+  // (protege contra limpeza automática por falta de espaço)
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+
   render();
+  renderBackupStatus();
 })();

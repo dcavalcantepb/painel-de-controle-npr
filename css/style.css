@@ -202,3 +202,7 @@ footer{margin-top:40px; color:var(--cor-footer); font-size:.9rem; display:flex; 
 /* créditos (mesmo rodapé da Calculadora de Dias Úteis) */
 .creditos{margin-top:22px; text-align:center; font-size:.9rem; color:var(--cor-footer); transition:color .3s ease}
 .logo-claude{width:.95em; height:.95em; vertical-align:-0.14em; margin:0 .1em}
+
+/* status do backup */
+.backup-status{flex-basis:100%; margin:0; font-size:.9rem; color:var(--cor-footer)}
+.backup-status.pendente{color:var(--cor-erro); font-weight:600}
