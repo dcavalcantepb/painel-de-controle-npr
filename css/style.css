@@ -201,4 +201,4 @@ footer{margin-top:40px; color:var(--cor-footer); font-size:.9rem; display:flex; 
 
 /* créditos (mesmo rodapé da Calculadora de Dias Úteis) */
 .creditos{margin-top:22px; text-align:center; font-size:.9rem; color:var(--cor-footer); transition:color .3s ease}
-.logo-claude{width:1.1em; height:1.1em; vertical-align:-0.2em; margin:0 .1em}
+.logo-claude{width:.95em; height:.95em; vertical-align:-0.14em; margin:0 .1em}
