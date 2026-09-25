@@ -1,6 +1,6 @@
 (function(){
   const KEY = 'textos-padrao:v1';
-  const THEME_KEY = 'textos-padrao:tema';
+  const THEME_KEY = 'tema';
   const $ = (id) => document.getElementById(id);
 
   const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
@@ -306,19 +306,20 @@
     }
   });
 
-  // Tema
-  function applyTheme(t){
-    if (t) document.documentElement.setAttribute('data-theme', t);
-    else document.documentElement.removeAttribute('data-theme');
-    $('themeBtn').textContent = t === 'dark' ? 'Tema: escuro' : t === 'light' ? 'Tema: claro' : 'Tema: automático';
+  // Tema claro/escuro (mesma chave e valores da Calculadora de Dias Úteis;
+  // o tema inicial já foi aplicado pelo script no <head> do index.html)
+  function atualizarIconeTema(tema){
+    $('btnTema').textContent = tema === 'escuro' ? '☀️' : '🌙';
   }
-  let theme = null;
-  try { theme = localStorage.getItem(THEME_KEY); } catch (e) {}
-  applyTheme(theme);
-  $('themeBtn').addEventListener('click', () => {
-    theme = theme === null ? 'light' : theme === 'light' ? 'dark' : null;
-    try { theme ? localStorage.setItem(THEME_KEY, theme) : localStorage.removeItem(THEME_KEY); } catch (e) {}
-    applyTheme(theme);
+  function aplicarTema(tema){
+    document.documentElement.setAttribute('data-theme', tema);
+    try { localStorage.setItem(THEME_KEY, tema); } catch (e) {}
+    atualizarIconeTema(tema);
+  }
+  atualizarIconeTema(document.documentElement.getAttribute('data-theme') || 'claro');
+  $('btnTema').addEventListener('click', () => {
+    const atual = document.documentElement.getAttribute('data-theme') || 'claro';
+    aplicarTema(atual === 'escuro' ? 'claro' : 'escuro');
   });
 
   render();

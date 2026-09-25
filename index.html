@@ -5,10 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Painel de Controle NPR</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script>
+(function(){
+  var salvo = localStorage.getItem("tema");
+  var tema = salvo || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro");
+  document.documentElement.setAttribute("data-theme", tema);
+})();
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -20,6 +24,7 @@
     <div class="actions">
       <input id="search" class="search" type="search" placeholder="Buscar em todas as seções ( / )" aria-label="Buscar textos">
       <button id="editToggle" class="btn" aria-pressed="false">Editar</button>
+      <button type="button" class="btn-tema" id="btnTema" title="Alternar tema claro/escuro" aria-label="Alternar tema claro/escuro">🌙</button>
     </div>
   </header>
 
@@ -38,9 +43,13 @@
     <span>Os textos ficam salvos neste navegador. Faça backup de vez em quando.</span>
     <button class="btn" id="exportBtn">Exportar backup</button>
     <button class="btn" id="importBtn">Importar backup</button>
-    <button class="btn" id="themeBtn">Tema</button>
     <input type="file" id="importFile" accept="application/json,.json" class="visually-hidden">
   </footer>
+
+  <div class="creditos">
+    Feito com ☕ <br>
+    Danilo Cavalcante e Cláudio <svg class="logo-claude" viewBox="0 0 24 24" role="img" aria-label="Claude" xmlns="http://www.w3.org/2000/svg"><g stroke="#D97757" stroke-width="2.6" stroke-linecap="round" fill="none"><line x1="12" y1="12" x2="12.00" y2="2.40"/><line x1="12" y1="12" x2="15.70" y2="5.59"/><line x1="12" y1="12" x2="19.79" y2="7.50"/><line x1="12" y1="12" x2="19.00" y2="12.00"/><line x1="12" y1="12" x2="20.49" y2="16.90"/><line x1="12" y1="12" x2="15.80" y2="18.58"/><line x1="12" y1="12" x2="12.00" y2="21.20"/><line x1="12" y1="12" x2="8.40" y2="18.24"/><line x1="12" y1="12" x2="3.69" y2="16.80"/><line x1="12" y1="12" x2="4.60" y2="12.00"/><line x1="12" y1="12" x2="4.21" y2="7.50"/><line x1="12" y1="12" x2="8.50" y2="5.94"/></g></svg> - 2026
+  </div>
 </div>
 
 <dialog id="itemDlg">
@@ -78,6 +87,7 @@
 </dialog>
 
 <div class="toast" id="toast" role="status"></div>
+<div class="faixa-decorativa"></div>
 
 <script src="js/app.js"></script>
 </body>
