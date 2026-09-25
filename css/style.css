@@ -116,7 +116,7 @@ h1{font-weight:700; font-size:clamp(24px,4.5vw,34px); line-height:1.1; margin:0;
 .search:focus{outline:none; border-color:var(--foco-borda); box-shadow:0 0 0 3px var(--foco-sombra)}
 
 /* Abas */
-.tabs{display:flex; gap:6px; overflow-x:auto; border-bottom:2px solid var(--tab-borda); margin-bottom:6px; scrollbar-width:thin}
+.tabs{display:flex; flex-wrap:wrap; gap:6px; border-bottom:2px solid var(--tab-borda); margin-bottom:6px}
 .tab{
   flex:0 0 auto; border:0; background:none; padding:10px 16px; cursor:pointer;
   color:var(--tab-inativa); font-weight:700; border-bottom:3px solid transparent; margin-bottom:-2px; transition:.2s;
