@@ -3,6 +3,8 @@
 Página estática (HTML + CSS + JS puro, sem build) com botões que copiam textos
 padrão para a área de transferência, organizados em seções. Os textos ficam
 salvos no `localStorage` do navegador; há exportação/importação de backup em JSON.
+Ao clicar em **Concluir edição**, se houve alterações desde o último backup, o arquivo
+de backup é baixado automaticamente (guarde-o no OneDrive).
 
 ## Estrutura
 

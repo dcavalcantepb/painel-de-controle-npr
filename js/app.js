@@ -67,6 +67,11 @@
     try { localStorage.setItem(META_KEY, JSON.stringify({ em: new Date().toISOString(), assinatura: assinatura() })); } catch (e) {}
     renderBackupStatus();
   }
+  // Há alterações sem backup? (sem backup registrado, conta como pendente)
+  function backupPendente(){
+    const meta = lerBackupMeta();
+    return !meta || meta.assinatura !== assinatura();
+  }
   function renderBackupStatus(){
     const meta = lerBackupMeta();
     const el = $('backupStatus'), btn = $('exportBtn');
@@ -304,6 +309,11 @@
     b.setAttribute('aria-pressed', String(editMode));
     b.textContent = editMode ? 'Concluir edição' : 'Editar';
     render();
+    // Ao concluir a edição, se houve alterações, o backup já é baixado.
+    if (!editMode && backupPendente()) {
+      exportarBackup();
+      toast('Edição concluída. Backup baixado: guarde o arquivo no OneDrive.');
+    }
   });
 
   $('search').addEventListener('input', (e) => { query = e.target.value.trim(); render(); });
@@ -314,7 +324,7 @@
   });
 
   // Backup
-  $('exportBtn').addEventListener('click', () => {
+  function exportarBackup(){
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     const d = new Date();
@@ -324,6 +334,9 @@
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     marcarBackupFeito();
+  }
+  $('exportBtn').addEventListener('click', () => {
+    exportarBackup();
     toast('Backup exportado. Guarde o arquivo no OneDrive.');
   });
   $('importBtn').addEventListener('click', () => $('importFile').click());
